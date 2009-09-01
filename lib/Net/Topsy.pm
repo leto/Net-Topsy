@@ -6,6 +6,7 @@ use URI::Escape;
 use JSON::Any qw/XS DWIW JSON/;
 use Data::Dumper;
 use namespace::autoclean;
+use LWP::UserAgent;
 
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
@@ -14,6 +15,7 @@ has useragent_class => ( isa => 'Str', is => 'ro', default => 'LWP::UserAgent' )
 has useragent_args  => ( isa => 'HashRef', is => 'ro', default => sub { {} } );
 has ua              => ( isa => 'Object', is => 'rw' );
 has beta_key        => ( isa => 'Str', is => 'rw', required => 1 );
+has format          => ( isa => 'Str', is => 'rw', required => 1, default => 'json' );
 has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
 
 has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
@@ -29,7 +31,8 @@ sub search {
     my $q = $params->{q};
     croak "Net::Topsy::search: q param is necessary" unless $q;
 
-    my $response = $self->ua->get( $self->base_url . '/search.json?q=' . $q );
+    my $format = $self->format;
+    my $response = $self->ua->get( $self->base_url . "/search.$format?beta=" . $self->beta_key . '&q=' . $q );
     if ($response->is_success) {
         #warn "got success!";
         #warn Dumper [ $response ];
