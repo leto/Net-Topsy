@@ -146,7 +146,8 @@ Version 0.01
 
     use Net::Topsy;
 
-    my $topsy = Net::Topsy->new( { beta => $beta_key } );
+    my $topsy  = Net::Topsy->new( { beta => $beta_key } );
+    my $search = $topsy->search( { q => 'perl' } );
 
 =head1 AUTHOR
 
