@@ -15,8 +15,60 @@ my %_api = (
     'otter.topsy.com' => {
         '/search' => {
             args       => {
-            q       => 1,
-            windows => 0,
+                q       => 1,
+                window  => 0,
+            },
+        },
+        '/searchcount' => {
+            args       => {
+                q       => 1,
+                window  => 0,
+            },
+        },
+        '/profilesearch' => {
+            args       => {
+                q       => 1,
+            },
+        },
+        '/authorsearch' => {
+            args       => {
+                q       => 1,
+                window  => 0,
+            },
+        },
+        '/stats' => {
+            args       => {
+                url       => 1,
+            },
+        },
+        '/tags' => {
+            args       => {
+                url       => 1,
+            },
+        },
+        '/authorinfo' => {
+            args       => {
+                url       => 1,
+            },
+        },
+        '/urlinfo' => {
+            args       => {
+                url       => 1,
+            },
+        },
+        '/linkposts' => {
+            args       => {
+                url       => 1,
+            },
+        },
+        '/trendings' => {
+            args       => {
+                url       => 1,
+            },
+        },
+        '/related' => {
+            args       => {
+                url       => 1,
             },
         },
    },

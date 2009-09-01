@@ -15,7 +15,7 @@ has useragent_class => ( isa => 'Str', is => 'ro', default => 'LWP::UserAgent' )
 has useragent_args  => ( isa => 'HashRef', is => 'ro', default => sub { {} } );
 has ua              => ( isa => 'Object', is => 'rw' );
 has beta_key        => ( isa => 'Str', is => 'rw', required => 1 );
-has format          => ( isa => 'Str', is => 'rw', required => 1, default => 'json' );
+has format          => ( isa => 'Str', is => 'rw', required => 1, default => '.json' );
 has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
 
 has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
@@ -28,19 +28,99 @@ sub BUILD {
 
 sub search {
     my ($self, $params) = @_;
-    my $q = $params->{q};
-    croak "Net::Topsy::search: q param is necessary" unless $q;
+    return $self->_search($params, '/search');
+}
 
-    my $format = $self->format;
-    my $response = $self->ua->get( $self->base_url . "/search.$format?beta=" . $self->beta_key . '&q=' . $q );
+sub searchcount {
+    my ($self, $params) = @_;
+    return $self->_search($params, '/searchcount');
+}
+
+sub authorsearch {
+    my ($self, $params) = @_;
+    return $self->_search($params, '/authorsearch');
+}
+
+sub profilesearch {
+    my ($self, $params) = @_;
+    return $self->_search($params, '/profilesearch');
+}
+
+sub _search {
+    my ($self, $params, $route) = @_;
+    my $q      = $params->{q};
+    my $window = $params->{window};
+    die 'no route to _search!' unless $route;
+
+    croak "Net::Topsy::${route}: q param is necessary" unless $q;
+
+    $route  = $self->base_url . $route . $self->format;
+
+    $q = uri_escape($q);
+    my $url      = $route ."?beta=" . $self->beta_key . '&q=' . $q ;
+    $url        .= "windows=$window" if defined $window;
+
+    return $self->handle_response( $self->ua->get( $url ) );
+}
+
+sub _url_search {
+    my ($self, $params, $route) = @_;
+    my $url      = $params->{url};
+    my $contains = $params->{contains};
+    die 'no route to _url_search!' unless $route;
+
+    croak "Net::Topsy::${route}: url param is necessary" unless $url;
+
+    $route  = $self->base_url . $route . $self->format;
+
+    $q = uri_escape($q);
+    my $url      = $route ."?beta=" . $self->beta_key . '&q=' . $q ;
+    $url        .= "contains=$contains" if defined $contains;
+
+    return $self->_handle_response( $self->ua->get( $url ) );
+}
+
+sub stats {
+    my ($self, $params) = @_;
+    return $self->_url_search($params, '/stats');
+}
+
+sub tags {
+    my ($self, $params) = @_;
+    return $self->_url_search($params, '/tags');
+}
+
+sub authorinfo {
+    my ($self, $params) = @_;
+    return $self->_url_search($params, '/authorinfo');
+}
+
+sub urlinfo {
+    my ($self, $params) = @_;
+    return $self->_url_search($params, '/urlinfo');
+}
+
+sub linkposts {
+    my ($self, $params) = @_;
+    return $self->_url_search($params, '/linkposts');
+}
+
+sub trending {
+    my ($self, $params) = @_;
+    return $self->_url_search($params, '/trending');
+}
+
+sub related {
+    my ($self, $params) = @_;
+    return $self->_url_search($params, '/related');
+}
+
+sub _handle_response {
+    my ($self, $response ) = @_;
     if ($response->is_success) {
-        #warn "got success!";
-        #warn Dumper [ $response ];
-        #warn Dumper [ $response->content ];
         my $obj = $self->_from_json( $response->content );
         return $obj;
     } else {
-        #warn "got fail!";
         die $response->status_line;
     }
 }
