@@ -148,6 +148,11 @@ Version 0.01
     my $topsy  = Net::Topsy->new( { beta => $beta_key } );
     my $search = $topsy->search( { q => 'perl' } );
 
+All API methods take a hash reference of CGI parameters and return a hash
+reference. These will be URI-escaped, so that does not have to be done before
+calling these methods. Unknown parameters are currently ignored by Topsy, but
+that could change at any time.
+
 =head1 METHODS
 
 =item authorinfo
@@ -164,6 +169,13 @@ Version 0.01
 
 =item search
 
+    my $search = $topsy->search( { q => 'perl', window => 'd' } );
+
+Takes mantadory parameter "q", a string to search for, and the optional
+parameter "window", which  defaults to  "a". Other options for the "window"
+parameter are: "auto" - automagically pick the best window. Other choices: "h"
+last hour, "d" last day, "w" last week, "m" last month, "a" all time.
+
 =item searchcount
 
 =item tags
@@ -171,6 +183,10 @@ Version 0.01
 =item trackbacks
 
 =item trending
+
+    my $trends = $topsy->trending;
+
+This method takes no arguments and returns a hash reference of trending terms.
 
 =item urlinfo
 
