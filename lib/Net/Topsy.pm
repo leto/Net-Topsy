@@ -17,7 +17,6 @@ has ua              => ( isa => 'Object', is => 'rw' );
 has beta_key        => ( isa => 'Str', is => 'rw', required => 1 );
 has format          => ( isa => 'Str', is => 'rw', required => 1, default => '.json' );
 has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
-
 has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
 
 sub BUILD {
@@ -149,6 +148,32 @@ Version 0.01
     my $topsy  = Net::Topsy->new( { beta => $beta_key } );
     my $search = $topsy->search( { q => 'perl' } );
 
+=head1 METHODS
+
+=item authorinfo
+
+=item authorsearch
+
+=item linkposts
+
+=item profilesearch
+
+=item related
+
+=item stats
+
+=item search
+
+=item searchcount
+
+=item tags
+
+=item trackbacks
+
+=item trending
+
+=item urlinfo
+
 =head1 AUTHOR
 
 Jonathan Leto, C<< <jonathan at leto.net> >>
@@ -161,15 +186,13 @@ L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net::Topsy>.  I will be
 notified, and then you'll automatically be notified of progress on your bug as I
 make changes.
 
-
-
-
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc Net::Topsy
 
+For documentation about the Otter API to Topsy.com : L<http://code.google.com/p/otterapi> .
 
 You can also look for information at:
 
@@ -196,10 +219,12 @@ L<http://search.cpan.org/dist/Net::Topsy>
 
 =head1 ACKNOWLEDGEMENTS
 
+Many thanks to Marc Mims <marc@questright.com>, the author of Net::Twitter, for the
+Mock::LWP::UserAgent module that mocks out LWP::UserAgent for the tests.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Jonathan Leto, all rights reserved.
+Copyright 2009 Jonathan Leto <jonathan@leto.net>, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
