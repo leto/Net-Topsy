@@ -66,6 +66,11 @@ my %_api = (
                 url       => 1,
             },
         },
+        '/trackbacks' => {
+            args       => {
+                url       => 1,
+            },
+        },
         '/related' => {
             args       => {
                 url       => 1,

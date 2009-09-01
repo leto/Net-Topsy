@@ -47,36 +47,31 @@ sub profilesearch {
 
 sub _search {
     my ($self, $params, $route) = @_;
-    my $q      = $params->{q};
-    my $window = $params->{window};
     die 'no route to _search!' unless $route;
 
-    croak "Net::Topsy::${route}: q param is necessary" unless $q;
+    croak "Net::Topsy::${route}: q param is necessary" unless $params->{q};
 
-    $route  = $self->base_url . $route . $self->format;
-
-    $q = uri_escape($q);
-    my $url      = $route ."?beta=" . $self->beta_key . '&q=' . $q ;
-    $url        .= "windows=$window" if defined $window;
-
+    my $url = $self->_make_url($params, $route);
     return $self->_handle_response( $self->ua->get( $url ) );
 }
 
 sub _url_search {
     my ($self, $params, $route) = @_;
-    my $contains = $params->{contains};
     die 'no route to _url_search!' unless $route;
 
-    # XXX: trending doesn't require a url
-    #croak "Net::Topsy::${route}: url param is necessary" unless $params->{url};
-
-    $route  = $self->base_url . $route . $self->format;
-
-    my $url   = $route ."?beta=" . $self->beta_key;
-    $url     .= '&url=' . uri_escape($params->{url}) if defined $params->{url};
-    $url     .= "contains=$contains" if defined $contains;
-
+    my $url = $self->_make_url($params, $route);
     return $self->_handle_response( $self->ua->get( $url ) );
+}
+
+sub _make_url {
+    my ($self,$params,$route) = @_;
+    $route  = $self->base_url . $route . $self->format;
+    my $url   = $route ."?beta=" . $self->beta_key;
+    while( my ($k,$v) = each %$params) {
+        $url .= "&$k=" . uri_escape($v) . "&" if defined $v;
+    }
+    #warn "requesting $url";
+    return $url;
 }
 
 sub stats {
@@ -109,6 +104,11 @@ sub trending {
     return $self->_url_search($params, '/trending');
 }
 
+sub trackbacks {
+    my ($self, $params) = @_;
+    return $self->_url_search($params, '/trackbacks');
+}
+
 sub related {
     my ($self, $params) = @_;
     return $self->_url_search($params, '/related');
@@ -132,7 +132,7 @@ sub _from_json {
 
 =head1 NAME
 
-Net::Topsy - Perl Interface to the Otter API to Topsy
+Net::Topsy - Perl Interface to the Otter API to Topsy.com
 
 =head1 VERSION
 
@@ -146,7 +146,8 @@ Version 0.01
     use Net::Topsy;
 
     my $topsy  = Net::Topsy->new( { beta => $beta_key } );
-    my $search = $topsy->search( { q => 'perl' } );
+    my $search1 = $topsy->search( { q => 'perl' } );
+    my $search2 = $topsy->search( { q => 'lolcats', page => 3, perpage => 20 } );
 
 All API methods take a hash reference of CGI parameters and return a hash
 reference. These will be URI-escaped, so that does not have to be done before
@@ -154,6 +155,8 @@ calling these methods. Unknown parameters are currently ignored by Topsy, but
 that could change at any time.
 
 =head1 METHODS
+
+=over
 
 =item authorinfo
 
@@ -189,6 +192,8 @@ last hour, "d" last day, "w" last week, "m" last month, "a" all time.
 This method takes no arguments and returns a hash reference of trending terms.
 
 =item urlinfo
+
+=back
 
 =head1 AUTHOR
 
