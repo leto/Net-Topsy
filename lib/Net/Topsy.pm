@@ -60,22 +60,22 @@ sub _search {
     my $url      = $route ."?beta=" . $self->beta_key . '&q=' . $q ;
     $url        .= "windows=$window" if defined $window;
 
-    return $self->handle_response( $self->ua->get( $url ) );
+    return $self->_handle_response( $self->ua->get( $url ) );
 }
 
 sub _url_search {
     my ($self, $params, $route) = @_;
-    my $url      = $params->{url};
     my $contains = $params->{contains};
     die 'no route to _url_search!' unless $route;
 
-    croak "Net::Topsy::${route}: url param is necessary" unless $url;
+    # XXX: trending doesn't require a url
+    #croak "Net::Topsy::${route}: url param is necessary" unless $params->{url};
 
     $route  = $self->base_url . $route . $self->format;
 
-    $q = uri_escape($q);
-    my $url      = $route ."?beta=" . $self->beta_key . '&q=' . $q ;
-    $url        .= "contains=$contains" if defined $contains;
+    my $url   = $route ."?beta=" . $self->beta_key;
+    $url     .= '&url=' . uri_escape($params->{url}) if defined $params->{url};
+    $url     .= "contains=$contains" if defined $contains;
 
     return $self->_handle_response( $self->ua->get( $url ) );
 }
