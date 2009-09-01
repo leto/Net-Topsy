@@ -9,28 +9,24 @@ use Mock::LWP::UserAgent;
 
 use Net::Topsy;
 
-plan tests => 5;
+plan tests => 12;
 
 my $nt = Net::Topsy->new( beta_key => 'foo' );
 isa_ok $nt, 'Net::Topsy';
 
 my $ua = $nt->ua;
 
-{
-    my $result = $nt->search( { q => 'barack obama' } );
-    ok($result, 'got a result from search' );
+my @api_search_methods = qw/search searchcount profilesearch authorsearch/;
+my @api_url_methods = qw/tags stats trending authorinfo urlinfo linkposts related/;
+
+for my $method (@api_search_methods) {
+    my $result = $nt->$method( { q => 'lulz' } );
+    ok($result, "got a result from $method" );
 }
-{
-    my $result = $nt->searchcount( { q => 'barack obama' } );
-    ok($result, 'got a result from searchcount' );
-}
-{
-    my $result = $nt->profilesearch( { q => 'barack obama' } );
-    ok($result, 'got a result from profilesearch' );
-}
-{
-    my $result = $nt->authorsearch( { q => 'barack obama' } );
-    ok($result, 'got a result from authorsearch' );
+
+for my $method (@api_url_methods) {
+    my $result = $nt->$method( { url => 'lolz' } );
+    ok($result, "got a result from $method" );
 }
 
 1;

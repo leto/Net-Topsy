@@ -61,7 +61,7 @@ my %_api = (
                 url       => 1,
             },
         },
-        '/trendings' => {
+        '/trending' => {
             args       => {
                 url       => 1,
             },
