@@ -115,26 +115,15 @@ sub BUILD {
     my $self = shift;
     $self->ua($self->useragent_class->new(%{$self->useragent_args}));
     $self->ua->agent($self->useragent);
-}
 
-sub search {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/search');
-}
+    my @api_methods = keys %{$self->API->{$self->base_url}};
 
-sub searchcount {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/searchcount');
-}
-
-sub authorsearch {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/authorsearch');
-}
-
-sub profilesearch {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/profilesearch');
+    for my $method (@api_methods) {
+        Net::Topsy->meta->add_method( substr($method, 1) , sub {
+            my ($self, $params) = @_;
+            return $self->_topsy_api($params, $method);
+        });
+    }
 }
 
 sub _topsy_api {
@@ -181,50 +170,6 @@ sub _make_url {
     }
     #warn "requesting $url";
     return $url;
-}
-sub credit {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/credit');
-}
-
-sub stats {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/stats');
-}
-
-sub tags {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/tags');
-}
-
-sub authorinfo {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/authorinfo');
-}
-
-sub urlinfo {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/urlinfo');
-}
-
-sub linkposts {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/linkposts');
-}
-
-sub trending {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/trending');
-}
-
-sub trackbacks {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/trackbacks');
-}
-
-sub related {
-    my ($self, $params) = @_;
-    return $self->_topsy_api($params, '/related');
 }
 
 sub _handle_response {
