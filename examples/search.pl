@@ -13,7 +13,7 @@ Shows the top 30 matches for today.
 
 =cut
 
-my $topsy = Net::Topsy->new( beta_key => $ENV{TOPSY_API_KEY} );
+my $topsy = Net::Topsy->new( key => $ENV{TOPSY_API_KEY} );
 my $search = $topsy->search({
                                q => $search_term,
                                page   =>  1,  # default

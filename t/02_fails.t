@@ -10,14 +10,14 @@ use Test::More tests => 13;
 my @api_search_methods = qw/search searchcount profilesearch authorsearch/;
 my @api_url_methods = qw/trackbacks tags stats authorinfo urlinfo linkposts related/;
 
-my $nt = Net::Topsy->new( beta_key => 'foo' );
+my $nt = Net::Topsy->new( key => 'foo' );
 
 throws_ok( sub { my $nt = Net::Topsy->new },
-          qr/Attribute \(beta_key\) is required/,
+          qr/Attribute \(key\) is required/,
 );
 
-throws_ok( sub { my $nt = Net::Topsy->new( beta_key => undef ) },
-           qr/Attribute \(beta_key\) does not pass the type constraint/,
+throws_ok( sub { my $nt = Net::Topsy->new( key => undef ) },
+           qr/Attribute \(key\) does not pass the type constraint/,
 );
 
 for my $method (@api_search_methods) {

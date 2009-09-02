@@ -14,7 +14,7 @@ $VERSION = eval $VERSION;
 has useragent_class => ( isa => 'Str', is => 'ro', default => 'LWP::UserAgent' );
 has useragent_args  => ( isa => 'HashRef', is => 'ro', default => sub { {} } );
 has ua              => ( isa => 'Object', is => 'rw' );
-has beta_key        => ( isa => 'Str', is => 'rw', required => 1 );
+has key             => ( isa => 'Str', is => 'rw', required => 1 );
 has format          => ( isa => 'Str', is => 'rw', required => 1, default => '.json' );
 has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
 has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
@@ -174,15 +174,14 @@ sub _validate_params {
 
 sub _make_url {
     my ($self,$params,$route) = @_;
-    $route   = $self->base_url . $route . $self->format;
-    my $url  = $route . "?beta=" . $self->beta_key;
-    while (my ($k,$v) = each %$params) {
-        $url .= "&$k=". uri_escape($v) if defined $v;
+    $route  = $self->base_url . $route . $self->format;
+    my $url   = $route ."?beta=" . $self->key;
+    while( my ($k,$v) = each %$params) {
+        $url .= "&$k=" . uri_escape($v) . "&" if defined $v;
     }
     #warn "requesting $url";
     return $url;
 }
-
 sub credit {
     my ($self, $params) = @_;
     return $self->_topsy_api($params, '/credit');
@@ -233,7 +232,7 @@ sub _handle_response {
     if ($response->is_success) {
         return $self->_from_json( $response->content );
     } else {
-        croak $response->status_line;
+        die $response->status_line;
     }
 }
 
@@ -258,14 +257,19 @@ Version 0.01
 
     use Net::Topsy;
 
-    my $topsy  = Net::Topsy->new( { beta => $beta_key } );
+    my $topsy   = Net::Topsy->new( { key => $beta_key } );
     my $search1 = $topsy->search( { q => 'perl' } );
     my $search2 = $topsy->search( { q => 'lolcats', page => 3, perpage => 20 } );
 
-All API methods take a hash reference of CGI parameters and return a hash
-reference. These will be URI-escaped, so that does not have to be done before
-calling these methods. Unknown parameters are currently ignored by Topsy, but
+All API methods take a hash reference of CGI parameters.  These will be
+URI-escaped, so that does not have to be done before calling these methods.
+
+All API methods return hash references
+
+Unknown parameters are currently ignored by Topsy, but
 that could change at any time.
+
+
 
 =head1 METHODS
 
@@ -274,6 +278,8 @@ that could change at any time.
 =item authorinfo
 
 =item authorsearch
+
+=item credit
 
 =item linkposts
 

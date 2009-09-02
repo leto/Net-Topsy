@@ -11,7 +11,7 @@ use Net::Topsy;
 
 plan tests => 13;
 
-my $nt = Net::Topsy->new( beta_key => 'foo' );
+my $nt = Net::Topsy->new( key => 'foo' );
 isa_ok $nt, 'Net::Topsy';
 
 my $ua = $nt->ua;

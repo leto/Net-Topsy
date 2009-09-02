@@ -15,7 +15,7 @@ use strict;
 use URI;
 use Net::Topsy;
 
-my $_api = Net::Topsy->new( beta_key => 'foo' )->API;
+my $_api = Net::Topsy->new( key => 'foo' )->API;
 my %topsy_api;
 while ( my($host, $api) = each %$_api ) {
     while ( my($path, $entry) = each %$api ) {
