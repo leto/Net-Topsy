@@ -26,6 +26,8 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
                 args       => {
                     q       => 1,
                     window  => 0,
+                    page    => 0,
+                    perpage => 0,
                 },
             },
             '/searchcount' => {
@@ -37,12 +39,16 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
             '/profilesearch' => {
                 args       => {
                     q       => 1,
+                    page    => 0,
+                    perpage => 0,
                 },
             },
             '/authorsearch' => {
                 args       => {
                     q       => 1,
                     window  => 0,
+                    page    => 0,
+                    perpage => 0,
                 },
             },
             '/stats' => {
@@ -53,6 +59,8 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
             '/tags' => {
                 args       => {
                     url       => 1,
+                    page    => 0,
+                    perpage => 0,
                 },
             },
             '/authorinfo' => {
@@ -68,21 +76,31 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
             '/linkposts' => {
                 args       => {
                     url       => 1,
+                    contains => 0,
+                    page    => 0,
+                    perpage => 0,
                 },
             },
             '/trending' => {
                 args       => {
-                    url       => 1,
+                    page    => 0,
+                    perpage => 0,
                 },
             },
             '/trackbacks' => {
                 args       => {
-                    url       => 1,
+                    url      => 1,
+                    contains => 0,
+                    infonly  => 0,
+                    page     => 0,
+                    perpage  => 0,
                 },
             },
             '/related' => {
                 args       => {
-                    url       => 1,
+                    url     => 1,
+                    page    => 0,
+                    perpage => 0,
                 },
             },
         },
