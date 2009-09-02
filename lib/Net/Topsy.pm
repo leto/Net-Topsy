@@ -97,46 +97,57 @@ sub BUILD {
 
 sub search {
     my ($self, $params) = @_;
-    return $self->_search($params, '/search');
+    return $self->_topsy_api($params, '/search');
 }
 
 sub searchcount {
     my ($self, $params) = @_;
-    return $self->_search($params, '/searchcount');
+    return $self->_topsy_api($params, '/searchcount');
 }
 
 sub authorsearch {
     my ($self, $params) = @_;
-    return $self->_search($params, '/authorsearch');
+    return $self->_topsy_api($params, '/authorsearch');
 }
 
 sub profilesearch {
     my ($self, $params) = @_;
-    return $self->_search($params, '/profilesearch');
+    return $self->_topsy_api($params, '/profilesearch');
 }
 
-sub _search {
+sub _topsy_api {
     my ($self, $params, $route) = @_;
-    die 'no route to _search!' unless $route;
+    die 'no route to _topsy_api!' unless $route;
 
-    croak "Net::Topsy::${route}: q param is necessary" unless $params->{q};
-
+    $self->_validate_params($params, $route);
     my $url = $self->_make_url($params, $route);
     return $self->_handle_response( $self->ua->get( $url ) );
 }
 
 sub _validate_params {
     my ($self, $params, $route) = @_;
-    my %api = %{$self->API};
-    #my $args = $api{$self->base_url}{$route}{$args};
+    my %topsy_api = %{$self->API};
 
-}
-sub _url_search {
-    my ($self, $params, $route) = @_;
-    die 'no route to _url_search!' unless $route;
+    my $api_entry = $topsy_api{$self->base_url}{$route}
+        || croak "$route is not a topsy api entry";
 
-    my $url = $self->_make_url($params, $route);
-    return $self->_handle_response( $self->ua->get( $url ) );
+    my @required = grep { $api_entry->{args}{$_} } keys %{$api_entry->{args}};
+
+    if ( my @missing = grep { !exists $params->{$_} } @required ) {
+        croak "$route -> required params missing: @missing";
+    }
+
+    if ( my @undefined = grep { $params->{$_} eq '' } keys %$params ) {
+        croak "params with undefined values: @undefined";
+    }
+
+    my %unexpected_params = map { $_ => 1 } keys %$params;
+    delete $unexpected_params{$_} for keys %{$api_entry->{args}};
+    if ( my @unexpected_params = sort keys %unexpected_params ) {
+        # topsy seems to ignore unexpected params, so don't fail, just diag
+        print "# unexpected params: @unexpected_params\n" if $self->print_diags;
+    }
+
 }
 
 sub _make_url {
@@ -152,42 +163,42 @@ sub _make_url {
 
 sub stats {
     my ($self, $params) = @_;
-    return $self->_url_search($params, '/stats');
+    return $self->_topsy_api($params, '/stats');
 }
 
 sub tags {
     my ($self, $params) = @_;
-    return $self->_url_search($params, '/tags');
+    return $self->_topsy_api($params, '/tags');
 }
 
 sub authorinfo {
     my ($self, $params) = @_;
-    return $self->_url_search($params, '/authorinfo');
+    return $self->_topsy_api($params, '/authorinfo');
 }
 
 sub urlinfo {
     my ($self, $params) = @_;
-    return $self->_url_search($params, '/urlinfo');
+    return $self->_topsy_api($params, '/urlinfo');
 }
 
 sub linkposts {
     my ($self, $params) = @_;
-    return $self->_url_search($params, '/linkposts');
+    return $self->_topsy_api($params, '/linkposts');
 }
 
 sub trending {
     my ($self, $params) = @_;
-    return $self->_url_search($params, '/trending');
+    return $self->_topsy_api($params, '/trending');
 }
 
 sub trackbacks {
     my ($self, $params) = @_;
-    return $self->_url_search($params, '/trackbacks');
+    return $self->_topsy_api($params, '/trackbacks');
 }
 
 sub related {
     my ($self, $params) = @_;
-    return $self->_url_search($params, '/related');
+    return $self->_topsy_api($params, '/related');
 }
 
 sub _handle_response {
