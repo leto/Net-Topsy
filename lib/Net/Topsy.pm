@@ -87,6 +87,10 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
                     perpage => 0,
                 },
             },
+            '/credit' => {
+                args       => {
+                },
+            },
             '/trackbacks' => {
                 args       => {
                     url      => 1,
@@ -170,13 +174,18 @@ sub _validate_params {
 
 sub _make_url {
     my ($self,$params,$route) = @_;
-    $route  = $self->base_url . $route . $self->format;
-    my $url   = $route ."?beta=" . $self->beta_key;
-    while( my ($k,$v) = each %$params) {
-        $url .= "&$k=" . uri_escape($v) . "&" if defined $v;
+    $route   = $self->base_url . $route . $self->format;
+    my $url  = $route . "?beta=" . $self->beta_key;
+    while (my ($k,$v) = each %$params) {
+        $url .= "&$k=". uri_escape($v) if defined $v;
     }
     #warn "requesting $url";
     return $url;
+}
+
+sub credit {
+    my ($self, $params) = @_;
+    return $self->_topsy_api($params, '/credit');
 }
 
 sub stats {
@@ -222,10 +231,9 @@ sub related {
 sub _handle_response {
     my ($self, $response ) = @_;
     if ($response->is_success) {
-        my $obj = $self->_from_json( $response->content );
-        return $obj;
+        return $self->_from_json( $response->content );
     } else {
-        die $response->status_line;
+        croak $response->status_line;
     }
 }
 

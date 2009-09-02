@@ -9,7 +9,7 @@ use Mock::LWP::UserAgent;
 
 use Net::Topsy;
 
-plan tests => 12;
+plan tests => 13;
 
 my $nt = Net::Topsy->new( beta_key => 'foo' );
 isa_ok $nt, 'Net::Topsy';
@@ -29,4 +29,5 @@ for my $method (@api_url_methods) {
     ok($result, "got a result from $method" );
 }
 
+ok( $nt->credit, "got a result from credit" );
 1;

@@ -101,7 +101,6 @@ sub _topsy_rest_api {
 
 sub _validate_basic_url {
     my ($self, $url) = @_;
-
     my $uri = URI->new($url);
 
     die "scheme: expected http\n" unless $uri->scheme eq 'http';
