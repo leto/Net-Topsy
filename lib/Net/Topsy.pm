@@ -19,6 +19,76 @@ has format          => ( isa => 'Str', is => 'rw', required => 1, default => '.j
 has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
 has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
 
+has API => ( isa => 'HashRef', is => 'ro', default => sub {
+        {
+        'http://otter.topsy.com' => {
+            '/search' => {
+                args       => {
+                    q       => 1,
+                    window  => 0,
+                },
+            },
+            '/searchcount' => {
+                args       => {
+                    q       => 1,
+                    window  => 0,
+                },
+            },
+            '/profilesearch' => {
+                args       => {
+                    q       => 1,
+                },
+            },
+            '/authorsearch' => {
+                args       => {
+                    q       => 1,
+                    window  => 0,
+                },
+            },
+            '/stats' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+            '/tags' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+            '/authorinfo' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+            '/urlinfo' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+            '/linkposts' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+            '/trending' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+            '/trackbacks' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+            '/related' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+        },
+    },
+});
+
 sub BUILD {
     my $self = shift;
     $self->ua($self->useragent_class->new(%{$self->useragent_args}));
@@ -55,6 +125,12 @@ sub _search {
     return $self->_handle_response( $self->ua->get( $url ) );
 }
 
+sub _validate_params {
+    my ($self, $params, $route) = @_;
+    my %api = %{$self->API};
+    #my $args = $api{$self->base_url}{$route}{$args};
+
+}
 sub _url_search {
     my ($self, $params, $route) = @_;
     die 'no route to _url_search!' unless $route;
