@@ -11,8 +11,8 @@ plan skip_all => 'Pod::Coverage 0.19 required' if $@;
 eval "use Test::Pod::Coverage 1.04";
 plan skip_all => 'Test::Pod::Coverage 1.04 required' if $@;
 
-plan tests => all_modules();
+plan tests => 1;
 
-pod_coverage_ok($_, {
+pod_coverage_ok('Net::Topsy', {
     also_private => [qr/^BUILD(:?ARGS)?$/],
-}) for all_modules();
+});
