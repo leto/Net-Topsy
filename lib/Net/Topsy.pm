@@ -206,13 +206,12 @@ Version 0.01
     my $search1 = $topsy->search( { q => 'perl' } );
     my $search2 = $topsy->search( { q => 'lolcats', page => 3, perpage => 20 } );
 
+
 All API methods take a hash reference of CGI parameters.  These will be
 URI-escaped, so that does not have to be done before calling these methods.
 
-All API methods return hash references
-
-Unknown parameters are currently ignored by Topsy, but
-that could change at any time.
+Expect this API to change when Topsy is out of beta.  Unknown parameters are
+currently ignored by Topsy, but that could change at any time.
 
 
 
