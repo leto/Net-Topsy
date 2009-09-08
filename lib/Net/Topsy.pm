@@ -5,8 +5,10 @@ use Moose;
 use URI::Escape;
 use JSON::Any qw/XS DWIW JSON/;
 use Data::Dumper;
-use namespace::autoclean;
 use LWP::UserAgent;
+use Net::Topsy::Result;
+
+use namespace::autoclean;
 
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
@@ -175,7 +177,12 @@ sub _make_url {
 sub _handle_response {
     my ($self, $response ) = @_;
     if ($response->is_success) {
-        return $self->_from_json( $response->content );
+        my $result = Net::Topsy::Result->new(
+                        response => $response,
+                        perl     => $self->_from_json( $response->content ),
+                        json     => $response->content,
+        );
+        return $result;
     } else {
         die $response->status_line;
     }
