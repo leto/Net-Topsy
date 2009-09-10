@@ -29,5 +29,6 @@ for my $method (@api_url_methods) {
     ok($result, "got a result from $method" );
 }
 
-ok( $nt->credit, "got a result from credit" );
+#XXX fix this
+ok( $nt->credit( {} ), "got a result from credit" );
 1;

@@ -1,27 +1,28 @@
-package Net::Topsy;
-use 5.010;
-use Carp qw/croak/;
-use Moose;
-use URI::Escape;
-use JSON::Any qw/XS DWIW JSON/;
-use Data::Dumper;
-use LWP::UserAgent;
-use Net::Topsy::Result;
+use MooseX::Declare;
 
-use namespace::autoclean;
 
-our $VERSION = '0.01';
-$VERSION = eval $VERSION;
+class Net::Topsy {
+    use Carp qw/croak/;
+    use Moose;
+    use URI::Escape;
+    use JSON::Any qw/XS DWIW JSON/;
+    use Data::Dumper;
+    use LWP::UserAgent;
+    use Net::Topsy::Result;
+    our $VERSION = '0.01';
+    $VERSION = eval $VERSION;
 
-has useragent_class => ( isa => 'Str', is => 'ro', default => 'LWP::UserAgent' );
-has useragent_args  => ( isa => 'HashRef', is => 'ro', default => sub { {} } );
-has ua              => ( isa => 'Object', is => 'rw' );
-has key             => ( isa => 'Str', is => 'rw', required => 1 );
-has format          => ( isa => 'Str', is => 'rw', required => 1, default => '.json' );
-has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
-has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
+    use namespace::autoclean;
 
-has API => ( isa => 'HashRef', is => 'ro', default => sub {
+    has useragent_class => ( isa => 'Str', is => 'ro', default => 'LWP::UserAgent' );
+    has useragent_args  => ( isa => 'HashRef', is => 'ro', default => sub { {} } );
+    has ua              => ( isa => 'Object', is => 'rw' );
+    has key             => ( isa => 'Str', is => 'rw', required => 1 );
+    has format          => ( isa => 'Str', is => 'rw', required => 1, default => '.json' );
+    has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
+    has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
+
+    has API => ( isa => 'HashRef', is => 'ro', default => sub {
         {
         'http://otter.topsy.com' => {
             '/search' => {
@@ -107,93 +108,89 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
                     url     => 1,
                     page    => 0,
                     perpage => 0,
+                    },
                 },
             },
         },
-    },
-});
+    });
 
-sub BUILD {
-    my $self = shift;
-    $self->ua($self->useragent_class->new(%{$self->useragent_args}));
-    $self->ua->agent($self->useragent);
+    method BUILD {
+        $self->ua($self->useragent_class->new(%{$self->useragent_args}));
+        $self->ua->agent($self->useragent);
 
-    my @api_methods = keys %{$self->API->{$self->base_url}};
+        my @api_methods = keys %{$self->API->{$self->base_url}};
 
-    for my $method (@api_methods) {
-        Net::Topsy->meta->add_method( substr($method, 1) , sub {
-            my ($self, $params) = @_;
-            return $self->_topsy_api($params, $method);
-        });
-    }
-}
-
-sub _topsy_api {
-    my ($self, $params, $route) = @_;
-    die 'no route to _topsy_api!' unless $route;
-
-    $self->_validate_params($params, $route);
-    my $url = $self->_make_url($params, $route);
-    return $self->_handle_response( $self->ua->get( $url ) );
-}
-
-sub _validate_params {
-    my ($self, $params, $route) = @_;
-    my %topsy_api = %{$self->API};
-
-    my $api_entry = $topsy_api{$self->base_url}{$route}
-        || croak "$route is not a topsy api entry";
-
-    my @required = grep { $api_entry->{args}{$_} } keys %{$api_entry->{args}};
-
-    if ( my @missing = grep { !exists $params->{$_} } @required ) {
-        croak "$route -> required params missing: @missing";
+        for my $method (@api_methods) {
+            Net::Topsy->meta->make_mutable;
+            Net::Topsy->meta->add_method( substr($method, 1) , sub {
+                my ($self, $params) = @_;
+                return $self->_topsy_api($params, $method);
+            });
+            Net::Topsy->meta->make_immutable;
+        }
     }
 
-    if ( my @undefined = grep { $params->{$_} eq '' } keys %$params ) {
-        croak "params with undefined values: @undefined";
+    method _topsy_api ($params, $route) {
+        die 'no route to _topsy_api!' unless $route;
+
+        $self->_validate_params($params, $route);
+        my $url = $self->_make_url($params, $route);
+        return $self->_handle_response( $self->ua->get( $url ) );
     }
 
-    my %unexpected_params = map { $_ => 1 } keys %$params;
-    delete $unexpected_params{$_} for keys %{$api_entry->{args}};
-    if ( my @unexpected_params = sort keys %unexpected_params ) {
-        # topsy seems to ignore unexpected params, so don't fail, just diag
-        print "# unexpected params: @unexpected_params\n" if $self->print_diags;
+    method _validate_params ($params, $route) {
+        my %topsy_api = %{$self->API};
+
+        my $api_entry = $topsy_api{$self->base_url}{$route}
+            || croak "$route is not a topsy api entry";
+
+        my @required = grep { $api_entry->{args}{$_} } keys %{$api_entry->{args}};
+
+        if ( my @missing = grep { !exists $params->{$_} } @required ) {
+            croak "$route -> required params missing: @missing";
+        }
+
+        if ( my @undefined = grep { $params->{$_} eq '' } keys %$params ) {
+            croak "params with undefined values: @undefined";
+        }
+
+        my %unexpected_params = map { $_ => 1 } keys %$params;
+        delete $unexpected_params{$_} for keys %{$api_entry->{args}};
+        if ( my @unexpected_params = sort keys %unexpected_params ) {
+            # topsy seems to ignore unexpected params, so don't fail, just diag
+            print "# unexpected params: @unexpected_params\n" if $self->print_diags;
+        }
+
+    }
+
+    method _make_url ($params,$route) {
+        $route  = $self->base_url . $route . $self->format;
+        my $url   = $route ."?beta=" . $self->key;
+        while( my ($k,$v) = each %$params) {
+            $url .= "&$k=" . uri_escape($v) . "&" if defined $v;
+        }
+        #warn "requesting $url";
+        return $url;
+    }
+
+    method _handle_response ( $response ) {
+        if ($response->is_success) {
+            my $result = Net::Topsy::Result->new(
+                            response => $response,
+                            perl     => $self->_from_json( $response->content ),
+                            json     => $response->content,
+            );
+            return $result;
+        } else {
+            die $response->status_line;
+        }
+    }
+
+    method _from_json ($json) {
+        return eval { JSON::Any->from_json($json) };
     }
 
 }
-
-sub _make_url {
-    my ($self,$params,$route) = @_;
-    $route  = $self->base_url . $route . $self->format;
-    my $url   = $route ."?beta=" . $self->key;
-    while( my ($k,$v) = each %$params) {
-        $url .= "&$k=" . uri_escape($v) . "&" if defined $v;
-    }
-    #warn "requesting $url";
-    return $url;
-}
-
-sub _handle_response {
-    my ($self, $response ) = @_;
-    if ($response->is_success) {
-        my $result = Net::Topsy::Result->new(
-                        response => $response,
-                        perl     => $self->_from_json( $response->content ),
-                        json     => $response->content,
-        );
-        return $result;
-    } else {
-        die $response->status_line;
-    }
-}
-
-sub _from_json {
-    my ($self, $json) = @_;
-
-    return eval { JSON::Any->from_json($json) };
-}
-
 =head1 NAME
 
 Net::Topsy - Perl Interface to the Otter API to Topsy.com
