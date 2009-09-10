@@ -21,14 +21,13 @@ my @api_url_methods = qw/trackbacks tags stats authorinfo urlinfo linkposts rela
 
 for my $method (@api_search_methods) {
     my $result = $nt->$method( { q => 'lulz' } );
-    ok($result, "got a result from $method" );
+    isa_ok($result,'Net::Topsy::Result');
 }
 
 for my $method (@api_url_methods) {
     my $result = $nt->$method( { url => 'lolz' } );
-    ok($result, "got a result from $method" );
+    isa_ok($result,'Net::Topsy::Result');
 }
 
-#XXX fix this
-ok( $nt->credit( {} ), "got a result from credit" );
+ok( $nt->credit, "got a result from credit" );
 1;

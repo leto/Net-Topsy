@@ -124,6 +124,7 @@ class Net::Topsy {
             Net::Topsy->meta->make_mutable;
             Net::Topsy->meta->add_method( substr($method, 1) , sub {
                 my ($self, $params) = @_;
+                $params ||= {};
                 return $self->_topsy_api($params, $method);
             });
             Net::Topsy->meta->make_immutable;
