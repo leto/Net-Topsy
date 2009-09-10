@@ -1,13 +1,16 @@
-package Net::Topsy::Result;
-use Moose;
-use MooseX::Iterator;
-has perl => ( isa => 'HashRef', is => 'rw' );
-has json => ( isa => 'Str',     is => 'rw' );
-has response => ( isa => 'HTTP::Response', is => 'rw' );
+use MooseX::Declare;
 
-sub BUILD {
-    my $self = shift;
-    return $self;
+class Net::Topsy::Result {
+    use MooseX::Iterator;
+    use namespace::clean;
+
+    has perl     => ( isa => 'HashRef', is => 'rw' );
+    has json     => ( isa => 'Str',     is => 'rw' );
+    has response => ( isa => 'HTTP::Response', is => 'rw' );
+
+    method BUILD {
+        return $self;
+    }
 }
 
 1;
