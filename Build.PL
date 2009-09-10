@@ -14,13 +14,14 @@ my $builder = Module::Build->new(
     },
     requires => {
         'Moose'          => 0.78,
+        'MooseX::Declare' => 0.30,
+        'MooseX::Iterator'=> 0.11,
         'JSON::Any'      => 1.19,
         'URI::Escape'    => 0,
         'LWP::UserAgent' => 2.032,
-        'MooseX::Iterator'=> 0.11,
     },
     add_to_cleanup      => [ 'Net::Topsy-*' ],
-    create_makefile_pl => 'traditional',
+    create_makefile_pl  => 'traditional',
     meta_merge     => {
         resources => {
             repository  => 'http://github.com/leto/net-topsy/tree/master'
