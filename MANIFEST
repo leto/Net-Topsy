@@ -4,6 +4,7 @@ examples/search.pl
 examples/trending.pl
 lib/Net/Topsy.pm
 lib/Net/Topsy/Result.pm
+lib/Net/Topsy/Role/API.pm
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
@@ -13,6 +14,7 @@ t/00-load.t
 t/01_basic.t
 t/02_fails.t
 t/10_search.t
+t/11_trending.t
 t/99-pod_coverage.t
 t/99-pod_spelling.t
 t/99-pod_syntax.t
