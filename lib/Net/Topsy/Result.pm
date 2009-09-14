@@ -24,7 +24,7 @@ class Net::Topsy::Result {
 
     method BUILD {
         for my $attr (qw/page window total list perpage/) {
-            $self->$attr( $self->perl->{response}{$attr} );
+            $self->$attr( $self->perl->{response}{$attr} ) if exists $self->perl->{response}{$attr};
         }
         return $self;
     }

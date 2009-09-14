@@ -20,7 +20,7 @@ my $content =<<CONTENT;
 "response_type":"json","resource":"search",
 "url":"http://otter.topsy.com/search.json?q=barack+obama&window=auto"},
 "response": { "window":"d", "page":5, "total":425, "perpage":15, "list":[ {
-"stuff":"foo" } ] } }
+"url":"http://foo.com", "hits":"42" } ] } }
 CONTENT
 chomp $content;
 

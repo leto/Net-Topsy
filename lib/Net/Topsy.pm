@@ -1,6 +1,5 @@
 use MooseX::Declare;
 
-
 class Net::Topsy with Net::Topsy::Role::API {
     use Carp qw/croak confess/;
     use Moose;
