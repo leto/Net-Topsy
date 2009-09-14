@@ -19,7 +19,7 @@ my $content =<<CONTENT;
 { "request": { "parameters":{"window":"auto","q":"barack obama"},
 "response_type":"json","resource":"search",
 "url":"http://otter.topsy.com/search.json?q=barack+obama&window=auto"},
-"response": { "window":"d", "page":1, "total":425, "perpage":10, "list":[ {
+"response": { "window":"d", "page":5, "total":425, "perpage":15, "list":[ {
 "stuff":"foo" } ] } }
 CONTENT
 chomp $content;
