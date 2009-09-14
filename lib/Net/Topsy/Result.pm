@@ -2,19 +2,30 @@ use MooseX::Declare;
 
 class Net::Topsy::Result {
     use MooseX::Iterator;
-    use namespace::clean;
+    use Data::Dumper;
+    use namespace::autoclean;
 
-    has perl     => ( isa => 'HashRef', is => 'rw' );
-    has json     => ( isa => 'Str',     is => 'rw' );
+    # Result attributes
+    has perl     => ( isa => 'HashRef',        is => 'rw', default => sub { [ ] } );
+    has json     => ( isa => 'Str',            is => 'rw', default => '' );
     has response => ( isa => 'HTTP::Response', is => 'rw' );
-    has _list    => ( isa => 'ArrayRef', is => 'rw', default => sub { [ ] } );
-    has iter => (
+
+    # properties of result that Topsy sends us
+    has page     => ( isa => 'Int',      is => 'rw', default => 0 );
+    has window   => ( isa => 'Str',      is => 'rw', default => '' );
+    has total    => ( isa => 'Int',      is => 'rw', default => 0 );
+    has perpage  => ( isa => 'Int',      is => 'rw', default => 10);
+    has list     => ( isa => 'ArrayRef', is => 'rw', default => sub { [ ] } );
+
+    has iter     => (
         metaclass    => 'Iterable',
-        iterate_over => '_list',
+        iterate_over => 'list',
     );
 
     method BUILD {
-        $self->_list( @{$self->perl->{response}{list}} );
+        for my $attr (qw/page window total list perpage/) {
+            $self->$attr( $self->perl->{response}{$attr} );
+        }
         return $self;
     }
 }

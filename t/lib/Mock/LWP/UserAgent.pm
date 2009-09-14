@@ -15,6 +15,15 @@ use strict;
 use URI;
 use Net::Topsy;
 
+my $content =<<CONTENT;
+{ "request": { "parameters":{"window":"auto","q":"barack obama"},
+"response_type":"json","resource":"search",
+"url":"http://otter.topsy.com/search.json?q=barack+obama&window=auto"},
+"response": { "window":"d", "page":1, "total":425, "perpage":10, "list":[ {
+"stuff":"foo" } ] } }
+CONTENT
+chomp $content;
+
 my $_api = Net::Topsy->new( key => 'foo' )->API;
 my %topsy_api;
 while ( my($host, $api) = each %$_api ) {
@@ -120,7 +129,7 @@ sub _response {
     my ($self, %args) = @_;
 
     bless {
-        _content => $self->{_res_content} || '{"test":"1"}',
+        _content => $content, # $self->{_res_content}
         _rc      => $self->{_res_code   } || 200,
         _msg     => $self->{_res_message} || 'OK',
         _headers => {},
@@ -161,12 +170,16 @@ sub input_method { shift->{_input_method} }
 sub set_response {
     my ($self, $args) = @_;
 
+    chomp( my $content = join '', (<DATA>) );
     @{$self}{qw/_res_code _res_message _res_content/} = @{$args}{qw/code message content/};
-    ref $args->{content}
-        && ( $self->{_res_content} = eval { JSON::Any->to_json($args->{content}) } )
-        || ref $args->{content};
+   $self->{_res_content} = eval { JSON::Any->to_json($args->{content}) };
 }
 
-sub clear_response { delete @{shift()}{qw/_res_code _res_message _re_content/} }
+sub clear_response { delete @{shift()}{qw/_res_code _res_message _res_content/} }
 
 1;
+
+=head
+=cut
+
+__DATA__

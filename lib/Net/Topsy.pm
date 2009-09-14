@@ -2,7 +2,7 @@ use MooseX::Declare;
 
 
 class Net::Topsy {
-    use Carp qw/croak/;
+    use Carp qw/croak confess/;
     use Moose;
     use URI::Escape;
     use JSON::Any qw/XS DWIW JSON/;
@@ -176,10 +176,13 @@ class Net::Topsy {
 
     method _handle_response ( $response ) {
         if ($response->is_success) {
+
+            my $perl = $self->_from_json( $response->content );
+
             my $result = Net::Topsy::Result->new(
                             response => $response,
-                            perl     => $self->_from_json( $response->content ),
                             json     => $response->content,
+                            perl     => $perl,
             );
             return $result;
         } else {
@@ -188,7 +191,9 @@ class Net::Topsy {
     }
 
     method _from_json ($json) {
-        return eval { JSON::Any->from_json($json) };
+        my $perl = eval { JSON::Any->from_json($json) };
+        confess $@ if $@;
+        return $perl;
     }
 
 }
