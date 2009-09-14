@@ -8,7 +8,7 @@ class Net::Topsy with Net::Topsy::Role::API {
     use Data::Dumper;
     use LWP::UserAgent;
     use Net::Topsy::Result;
-    our $VERSION = '0.01';
+    our $VERSION = '0.01_01';
     $VERSION = eval $VERSION;
 
     use namespace::autoclean;
