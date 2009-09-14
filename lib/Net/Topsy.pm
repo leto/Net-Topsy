@@ -1,7 +1,7 @@
 use MooseX::Declare;
 
 
-class Net::Topsy {
+class Net::Topsy with Net::Topsy::Role::API {
     use Carp qw/croak confess/;
     use Moose;
     use URI::Escape;
@@ -21,98 +21,6 @@ class Net::Topsy {
     has format          => ( isa => 'Str', is => 'rw', required => 1, default => '.json' );
     has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
     has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
-
-    has API => ( isa => 'HashRef', is => 'ro', default => sub {
-        {
-        'http://otter.topsy.com' => {
-            '/search' => {
-                args       => {
-                    q       => 1,
-                    window  => 0,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/searchcount' => {
-                args       => {
-                    q       => 1,
-                    window  => 0,
-                },
-            },
-            '/profilesearch' => {
-                args       => {
-                    q       => 1,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/authorsearch' => {
-                args       => {
-                    q       => 1,
-                    window  => 0,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/stats' => {
-                args       => {
-                    url       => 1,
-                },
-            },
-            '/tags' => {
-                args       => {
-                    url       => 1,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/authorinfo' => {
-                args       => {
-                    url       => 1,
-                },
-            },
-            '/urlinfo' => {
-                args       => {
-                    url       => 1,
-                },
-            },
-            '/linkposts' => {
-                args       => {
-                    url       => 1,
-                    contains => 0,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/trending' => {
-                args       => {
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/credit' => {
-                args       => {
-                },
-            },
-            '/trackbacks' => {
-                args       => {
-                    url      => 1,
-                    contains => 0,
-                    infonly  => 0,
-                    page     => 0,
-                    perpage  => 0,
-                },
-            },
-            '/related' => {
-                args       => {
-                    url     => 1,
-                    page    => 0,
-                    perpage => 0,
-                    },
-                },
-            },
-        },
-    });
 
     method BUILD {
         $self->ua($self->useragent_class->new(%{$self->useragent_args}));
