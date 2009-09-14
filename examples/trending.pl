@@ -8,12 +8,14 @@ use Data::Dumper;
 
 TOPSY_API_KEY=somekey perl -Ilib examples/trending.pl
 
+Returns the top 25 trending terms, with links.
+
 =cut
 
 my $topsy  = Net::Topsy->new( key => $ENV{TOPSY_API_KEY} );
-my $search = $topsy->trending;
+my $search = $topsy->trending( { perpage => 25 });
 my $iter   = $search->iter;
 while ($iter->has_next) {
     my $item = $iter->next;
-    print "$item->{url}\n";
+    printf "%-20s %s\n", $item->{term}, $item->{url};
 }
