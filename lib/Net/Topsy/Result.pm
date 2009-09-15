@@ -1,5 +1,11 @@
 use MooseX::Declare;
 
+=head1 NAME
+
+Net::Topsy::Result - Topsy Result Objects
+
+=cut
+
 class Net::Topsy::Result {
     use MooseX::Iterator;
     use Data::Dumper;
@@ -29,5 +35,18 @@ class Net::Topsy::Result {
         return $self;
     }
 }
+
+=head1 AUTHOR
+
+Jonathan Leto, C<< <jonathan at leto.net> >>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2009 Jonathan Leto <jonathan@leto.net>, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
 
 1;
