@@ -27,6 +27,47 @@ of the intricacies of the raw data structure that is returned. The result of
 an API call has some metadata associated with it, as well as an iterator that
 allows you to access the list of data.
 
+=head1 METHODS
+
+=over
+
+=item iter
+
+    my $iter   = $result->iter;
+    while ($iter->has_next) {
+        my $item = $iter->next;
+        ...
+    }
+
+Returns an iterator that is a subclass of MooseX::Iterator, which allows access
+to the list of data that is the result of a Topsy API call.
+
+=item page
+
+    my $page = $result->page();
+
+Returns the current page number of the results.
+
+=item window
+
+    my $window = $result->window();
+
+Returns the single letter designation of the time window.
+
+=item total
+
+    my $total = $result->total();
+
+Returns the total number of results.
+
+=item perpage
+
+    my $perpage = $result->perpage();
+
+Returns the number of results "per page", i.e. the number of results in the list.
+
+=back
+
 =cut
 
 class Net::Topsy::Result {
