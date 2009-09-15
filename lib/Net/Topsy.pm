@@ -130,8 +130,6 @@ URI-escaped, so that does not have to be done before calling these methods.
 Expect this API to change when Topsy is out of beta.  Unknown parameters are
 currently ignored by Topsy, but that could change at any time.
 
-
-
 =head1 METHODS
 
 =over

@@ -4,6 +4,29 @@ use MooseX::Declare;
 
 Net::Topsy::Result - Topsy Result Objects
 
+=head1 SYNOPSIS
+
+    use Net::Topsy;
+
+    my $topsy  = Net::Topsy->new( key => $ENV{TOPSY_API_KEY} );
+    my $result = $topsy->search({
+                                q => $search_term,
+                                page   =>  1,  # default
+                                perpage => 30, # 30 per page
+                                window => 'd', # today
+                                });
+    my $iter   = $result->iter;
+    while ($iter->has_next) {
+        my $item = $iter->next;
+        printf "%-60s : %d : %s\n", $item->{title} ,$item->{hits}, $item->{url};
+    }
+
+
+Each API call to a Net::Topsy object returns an object that abstracts away some
+of the intricacies of the raw data structure that is returned. The result of
+an API call has some metadata associated with it, as well as an iterator that
+allows you to access the list of data.
+
 =cut
 
 class Net::Topsy::Result {
