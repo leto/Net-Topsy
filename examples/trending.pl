@@ -2,7 +2,6 @@
 use strict;
 use warnings;
 use Net::Topsy;
-use Data::Dumper;
 
 =head1 SYNOPSIS
 
