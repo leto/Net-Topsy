@@ -16,7 +16,6 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
             '/searchcount' => {
                 args       => {
                     q       => 1,
-                    window  => 0,
                 },
             },
             '/profilesearch' => {
