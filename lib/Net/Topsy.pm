@@ -152,10 +152,10 @@ currently ignored by Topsy, but that could change at any time.
 
     my $search = $topsy->search( { q => 'perl', window => 'd' } );
 
-Takes mantadory parameter "q", a string to search for, and the optional
-parameter "window", which  defaults to  "a". Other options for the "window"
-parameter are: "auto" - automagically pick the best window. Other choices: "h"
-last hour, "d" last day, "w" last week, "m" last month, "a" all time.
+Takes mandatory parameter "q", a string to search for, and the optional
+parameter "window", which defaults to "a". Valid options for the "window"
+parameter are: "auto" lets Topsy to pick the best window, "h" last hour,
+"d" last day, "w" last week, "m" last month, "a" all time.
 
 =item searchcount
 
@@ -165,9 +165,10 @@ last hour, "d" last day, "w" last week, "m" last month, "a" all time.
 
 =item trending
 
-    my $trends = $topsy->trending;
+    my $trends = $topsy->trending( { perpage => 5 } );
 
-This method takes no arguments and returns a hash reference of trending terms.
+This method takes optional "perpage" argument and returns a hash reference
+of trending terms.
 
 =item urlinfo
 
