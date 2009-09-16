@@ -5,16 +5,12 @@ use Test::Exception;
 use lib qw(t/lib);
 use Mock::LWP::UserAgent;
 use Net::Topsy;
-use Test::More tests => 13;
+use Test::More tests => 12;
 
 my @api_search_methods = qw/search searchcount profilesearch authorsearch/;
 my @api_url_methods = qw/trackbacks tags stats authorinfo urlinfo linkposts related/;
 
 my $nt = Net::Topsy->new( key => 'foo' );
-
-throws_ok( sub { my $nt = Net::Topsy->new },
-          qr/Attribute \(key\) is required/,
-);
 
 throws_ok( sub { my $nt = Net::Topsy->new( key => undef ) },
            qr/Attribute \(key\) does not pass the type constraint/,
