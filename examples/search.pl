@@ -13,7 +13,7 @@ will not need the -Ilib flag.
 
 =cut
 
-my $topsy  = Net::Topsy->new( key => $ENV{TOPSY_API_KEY} );
+my $topsy  = Net::Topsy->new;
 my $result = $topsy->search({
                                q => $search_term,
                                page   =>  1,  # default

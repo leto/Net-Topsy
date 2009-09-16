@@ -16,7 +16,7 @@ class Net::Topsy with Net::Topsy::Role::API {
     has useragent_class => ( isa => 'Str', is => 'ro', default => 'LWP::UserAgent' );
     has useragent_args  => ( isa => 'HashRef', is => 'ro', default => sub { {} } );
     has ua              => ( isa => 'Object', is => 'rw' );
-    has key             => ( isa => 'Str', is => 'rw', required => 1 );
+    has key             => ( isa => 'Str', is => 'rw', required => 0 );
     has format          => ( isa => 'Str', is => 'rw', required => 1, default => '.json' );
     has base_url        => ( isa => 'Str', is => 'ro', default => 'http://otter.topsy.com' );
     has useragent       => ( isa => 'Str', is => 'ro', default => "Net::Topsy/$VERSION (Perl)" );
@@ -73,7 +73,7 @@ class Net::Topsy with Net::Topsy::Role::API {
 
     method _make_url ($params,$route) {
         $route  = $self->base_url . $route . $self->format;
-        my $url   = $route ."?beta=" . $self->key;
+        my $url = $route . "?beta=" . ($self->key || '');
         while( my ($k,$v) = each %$params) {
             $url .= "&$k=" . uri_escape($v) . "&" if defined $v;
         }

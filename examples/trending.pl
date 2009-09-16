@@ -6,13 +6,13 @@ use Data::Dumper;
 
 =head1 SYNOPSIS
 
-TOPSY_API_KEY=somekey perl -Ilib examples/trending.pl
+perl -Ilib examples/trending.pl
 
 Returns the top 25 trending terms, with links.
 
 =cut
 
-my $topsy  = Net::Topsy->new( key => $ENV{TOPSY_API_KEY} );
+my $topsy  = Net::Topsy->new;
 my $search = $topsy->trending( { perpage => 25 });
 my $iter   = $search->iter;
 while ($iter->has_next) {
