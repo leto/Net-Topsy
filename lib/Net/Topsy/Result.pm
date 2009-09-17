@@ -10,10 +10,10 @@ Net::Topsy::Result - Topsy Result Objects
 
     my $topsy  = Net::Topsy->new( key => $ENV{TOPSY_API_KEY} );
     my $result = $topsy->search({
-                                q => $search_term,
-                                page   =>  1,  # default
-                                perpage => 30, # 30 per page
-                                window => 'd', # today
+                                    q => $search_term,
+                                    page   =>  1,  # default
+                                    perpage => 30, # 30 per page
+                                    window => 'd', # today
                                 });
     my $iter   = $result->iter;
     while ($iter->has_next) {
@@ -65,6 +65,35 @@ Returns the total number of results.
     my $perpage = $result->perpage();
 
 Returns the number of results "per page", i.e. the number of results in the list.
+
+=item perl
+
+    my $perl = $result->perl();
+
+Returns the perl (hash reference) representation of the JSON that is returned by
+the Topsy API.
+
+=item json
+
+    my $json = $result->json();
+
+Returns the raw string of JSON that is returned by the Topsy API.
+
+=item response
+
+    my $r = $result->response();
+
+Returns the HTTP::Response object that is returned by the Topsy API.
+
+=item list
+
+    my $list = $result->list();
+
+Returns an array reference of hash references that is the raw representation of
+what is returned by the Topsy API. You probably shouldn't mess with this, but
+maybe you know what you are doing.
+
+The structure of this list can change at any time, don't depend on it.
 
 =back
 

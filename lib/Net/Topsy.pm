@@ -8,7 +8,7 @@ class Net::Topsy with Net::Topsy::Role::API {
     use Data::Dumper;
     use LWP::UserAgent;
     use Net::Topsy::Result;
-    our $VERSION = '0.01_01';
+    our $VERSION = '0.02';
     $VERSION = eval $VERSION;
 
     use namespace::autoclean;
@@ -110,7 +110,7 @@ Net::Topsy - Perl Interface to the Otter API to Topsy.com
 
 =head1 VERSION
 
-Version 0.01_01
+Version 0.02
 
 =cut
 
@@ -219,7 +219,8 @@ L<http://search.cpan.org/dist/Net::Topsy>
 =head1 ACKNOWLEDGEMENTS
 
 Many thanks to Marc Mims <marc@questright.com>, the author of Net::Twitter, for the
-Mock::LWP::UserAgent module that mocks out LWP::UserAgent for the tests.
+Mock::LWP::UserAgent module that mocks out LWP::UserAgent for the tests. Thanks
+to Richard Soderberg <rs@topsy.com> for various bugfixes.
 
 =head1 COPYRIGHT & LICENSE
 
