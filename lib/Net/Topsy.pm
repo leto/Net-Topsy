@@ -167,8 +167,7 @@ parameter are: "auto" lets Topsy to pick the best window, "h" last hour,
 
     my $trends = $topsy->trending( { perpage => 5 } );
 
-This method takes optional "perpage" argument and returns a hash reference
-of trending terms.
+This method takes optional "perpage" argument and returns a Net::Topsy::Result object.
 
 =item urlinfo
 
