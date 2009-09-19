@@ -17,7 +17,6 @@ t/10_search.t
 t/11_trending.t
 t/99-pod_coverage.t
 t/99-pod_spelling.t
-t/99-pod_syntax.t
 t/boilerplate.t
 t/lib/Mock/LWP/UserAgent.pm
 t/pod.t
