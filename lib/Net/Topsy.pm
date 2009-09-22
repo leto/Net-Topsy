@@ -1,3 +1,6 @@
+# This is for PAUSE
+package Net::Topsy;
+
 use MooseX::Declare;
 
 class Net::Topsy with Net::Topsy::Role::API {

@@ -1,3 +1,6 @@
+# This is for PAUSE
+package Net::Topsy::Result;
+
 use MooseX::Declare;
 
 =head1 NAME
