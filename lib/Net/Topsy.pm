@@ -11,7 +11,7 @@ class Net::Topsy with Net::Topsy::Role::API {
     use Data::Dumper;
     use LWP::UserAgent;
     use Net::Topsy::Result;
-    our $VERSION = '0.02';
+    our $VERSION = '0.03';
     $VERSION = eval $VERSION;
 
     use namespace::autoclean;
@@ -113,7 +113,7 @@ Net::Topsy - Perl Interface to the Otter API to Topsy.com
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
