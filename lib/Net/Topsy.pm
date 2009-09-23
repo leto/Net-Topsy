@@ -122,7 +122,7 @@ Version 0.03
 
     use Net::Topsy;
 
-    my $topsy   = Net::Topsy->new( { key => $beta_key } );
+    my $topsy   = Net::Topsy->new( key => 'betakey' );
     my $search1 = $topsy->search( { q => 'perl' } );
     my $search2 = $topsy->search( { q => 'lolcats', page => 3, perpage => 20 } );
 

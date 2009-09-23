@@ -11,6 +11,7 @@ Net::Topsy::Result - Topsy Result Objects
 
     use Net::Topsy;
 
+    # This assumes you run a script with a TOPSY_API_KEY shell variable set
     my $topsy  = Net::Topsy->new( key => $ENV{TOPSY_API_KEY} );
     my $result = $topsy->search({
                                     q => $search_term,
