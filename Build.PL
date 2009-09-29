@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More'      => 0,
         'Test::Exception' => 0.21,
+        'Test::Warn'      => 0,
     },
     requires => {
         'Moose'          => 0.78,

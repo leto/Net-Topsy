@@ -5,10 +5,12 @@ use Test::Exception;
 use lib qw(t/lib);
 use Mock::LWP::UserAgent;
 use Net::Topsy;
-use Test::More tests => 13;
+use Test::More tests => 17;
+use Test::Warn;
 
-my @api_search_methods = qw/search searchcount profilesearch authorsearch toplinks toplinkcount/;
-my @api_url_methods = qw/trackbacks tags stats authorinfo urlinfo linkposts related trackbackcount linkpostcount/;
+my @api_search_methods = qw/search searchcount profilesearch authorsearch /;
+my @api_url_methods = qw/trackbacks linkpostcount tags stats authorinfo urlinfo linkposts related trackbackcount linkpostcount/;
+my @link_methods = qw/toplinks toplinkcount /;
 
 my $nt = Net::Topsy->new( key => 'foo' );
 
@@ -29,6 +31,14 @@ for my $method (@api_url_methods) {
             $nt->$method( { } );
         },
         qr/$method -> required params missing: url/,
+    );
+}
+
+for my $method (@link_methods) {
+    warnings_like( sub {
+            $nt->$method( { q => 'foo' } );
+        },
+        qr/unexpected params: q/,
     );
 }
 

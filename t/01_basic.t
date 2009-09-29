@@ -8,7 +8,7 @@ use lib qw(t/lib);
 use Mock::LWP::UserAgent;
 use Net::Topsy;
 
-plan tests => 15;
+plan tests => 18;
 
 {
     my $nt = Net::Topsy->new( key => 'foo' );

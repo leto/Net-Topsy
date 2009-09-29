@@ -69,7 +69,7 @@ class Net::Topsy with Net::Topsy::Role::API {
         delete $unexpected_params{$_} for keys %{$api_entry->{args}};
         if ( my @unexpected_params = sort keys %unexpected_params ) {
             # topsy seems to ignore unexpected params, so don't fail, just diag
-            print "# unexpected params: @unexpected_params\n" if $self->print_diags;
+            warn "# unexpected params: @unexpected_params";
         }
 
     }
