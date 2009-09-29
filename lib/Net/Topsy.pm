@@ -145,6 +145,8 @@ currently ignored by Topsy, but that could change at any time.
 
 =item linkposts
 
+=item linkpostcount
+
 =item profilesearch
 
 =item related
@@ -162,7 +164,13 @@ parameter are: "auto" lets Topsy to pick the best window, "h" last hour,
 
 =item searchcount
 
+=item stats
+
 =item tags
+
+=item toplinks
+
+=item toplinkcount
 
 =item trackbacks
 

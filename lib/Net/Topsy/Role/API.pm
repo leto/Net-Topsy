@@ -56,9 +56,29 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
                     url       => 1,
                 },
             },
+            '/linkpostcount' => {
+                args       => {
+                    url       => 1,
+                    contains => 0,
+                },
+            },
             '/linkposts' => {
                 args       => {
                     url       => 1,
+                    contains => 0,
+                    page    => 0,
+                    perpage => 0,
+                },
+            },
+            '/toplinkcount' => {
+                args       => {
+                    contains => 0,
+                    page    => 0,
+                    perpage => 0,
+                },
+            },
+            '/toplinks' => {
+                args       => {
                     contains => 0,
                     page    => 0,
                     perpage => 0,
