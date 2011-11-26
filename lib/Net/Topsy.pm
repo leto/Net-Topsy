@@ -6,7 +6,7 @@ use MooseX::Declare;
 class Net::Topsy with Net::Topsy::Role::API {
     use Carp qw/croak confess/;
     use Moose;
-    use URI::Escape;
+    use URI;
     use JSON::Any qw/XS DWIW JSON/;
     use Data::Dumper;
     use LWP::UserAgent;
@@ -69,22 +69,22 @@ class Net::Topsy with Net::Topsy::Role::API {
         delete $unexpected_params{$_} for keys %{$api_entry->{args}};
         if ( my @unexpected_params = sort keys %unexpected_params ) {
             # topsy seems to ignore unexpected params, so don't fail, just diag
-            warn "# unexpected params: @unexpected_params";
+            print "# unexpected params: @unexpected_params\n" if $self->print_diags;
         }
 
     }
 
-    method _make_url ($params,$route) {
+    method _make_url ($params, $route) {
         $route  = $self->base_url . $route . $self->format;
-        my $url = $route . "?beta=" . ($self->key || '');
-        while( my ($k,$v) = each %$params) {
-            $url .= "&$k=" . uri_escape($v) . "&" if defined $v;
-        }
-        #warn "requesting $url";
+        
+        my $url = URI->new($route);
+        $url->query_form('apikey', $self->key || '');
+        $url->query_form($params);
+        warn "requesting $url";
         return $url;
     }
 
-    method _handle_response ( $response ) {
+    method _handle_response ($response) {
         if ($response->is_success) {
 
             my $perl = $self->_from_json( $response->content );
@@ -122,71 +122,77 @@ Version 0.03
 
     use Net::Topsy;
 
-    my $topsy   = Net::Topsy->new( key => 'betakey' );
-    my $search1 = $topsy->search( { q => 'perl' } );
-    my $search2 = $topsy->search( { q => 'lolcats', page => 3, perpage => 20 } );
+    my $topsy   = Net::Topsy->new( { key => $apikey } );
+    my $result1 = $topsy->search( { q => 'perl' } );
+    my $result2 = $topsy->search( { q => '@BlueseedProject', page => 2, perpage => 10 } );
+    
+    my $iter = $result->iter;
+    while ($iter->has_next) {
+        my $item = $iter->next;
+        printf "Title: %s\nHits: %d\nURL: %s\n\n", $item->{title} ,$item->{hits}, $item->{url};
+    }
 
+All API methods take a hash reference of CGI parameters, which will be
+automatically URI-escaped for you.
 
-All API methods take a hash reference of CGI parameters.  These will be
-URI-escaped, so that does not have to be done before calling these methods.
-
-Expect this API to change when Topsy is out of beta.  Unknown parameters are
-currently ignored by Topsy, but that could change at any time.
+The API is comprehensively documented at L<http://code.google.com/p/otterapi/wiki/Resources>.
+Below are a few highlights. Always refer to the URL above for up-to-date
+documentation.
 
 =head1 METHODS
 
-=over
+=over 4
 
 =item authorinfo
 
-=item authorsearch
-
-=item credit
+=item experts (formerly 'authorsearch')
 
 =item linkposts
 
-=item linkpostcount
+=item linkpostscount
 
-=item profilesearch
-
-=item related
-
-=item stats
+=item populartrackbacks
 
 =item search
 
-    my $search = $topsy->search( { q => 'perl', window => 'd' } );
+    my $result = $topsy->search( { q => 'perl', window => 'd' } );
 
-Takes mandatory parameter "q", a string to search for, and the optional
-parameter "window", which defaults to "a". Valid options for the "window"
-parameter are: "auto" lets Topsy to pick the best window, "h" last hour,
-"d" last day, "w" last week, "m" last month, "a" all time.
+Takes the mandatory parameter C<q>, a string to search for, and the optional
+parameters C<window> and C<type>. Please refer to L<http://code.google.com/p/otterapi/wiki/Resources#/search>
+for more information.
+
+Optionally accepts list parameters - see L<http://code.google.com/p/otterapi/wiki/ResListParameters>.
+
+Returns a L<Net::Topsy::Result> object.
 
 =item searchcount
 
+=item searchhistogram
+
+=item searchdate
+
 =item stats
 
+=item top
+
 =item tags
-
-=item toplinks
-
-=item toplinkcount
 
 =item trackbacks
 
 =item trending
 
-    my $trends = $topsy->trending( { perpage => 5 } );
-
-This method takes optional "perpage" argument and returns a Net::Topsy::Result object.
-
 =item urlinfo
 
 =back
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Jonathan Leto, C<< <jonathan at leto.net> >>
+Dan Dascalescu, L<http://dandascalescu.com>
+
+=head1 REPOSITORY
+
+Net::Topsy lives at GitHub, L<https://github.com/leto/Net-Topsy>
 
 =head1 BUGS
 
