@@ -26,7 +26,7 @@ Net::Topsy::Result - Topsy Result Objects
     }
 
 
-Each API call to a Net::Topsy object returns an object that abstracts away some
+Each API call to a L<Net::Topsy> object returns an object that abstracts away some
 of the intricacies of the raw data structure that is returned. The result of
 an API call has some metadata associated with it, as well as an iterator that
 allows you to access the list of data.
@@ -52,17 +52,33 @@ to the list of data that is the result of a Topsy API call.
 
 Returns the current page number of the results.
 
+=item last_page
+
+    my $page = $result->last_page();
+
+Returns whether the current page is the last. This is an educated guess
+currently, due to an API bug (L<https://code.google.com/p/otterapi/issues/detail?id=18>).
+
 =item window
 
     my $window = $result->window();
 
-Returns the single letter designation of the time window.
+Returns the designation of the time window, e.g. 'h12' (last 21 hours),
+or 'd10' (last 10 days).
 
 =item total
 
     my $total = $result->total();
 
 Returns the total number of results.
+
+=item last_offset
+
+    my $last_offset = $result->last_offset();
+
+Returns the offset of the last result. Can be passed as the C<offset>
+parameter to methods that accept list parameters - see
+L<http://code.google.com/p/otterapi/wiki/ResListParameters>.
 
 =item perpage
 
@@ -114,21 +130,29 @@ class Net::Topsy::Result {
     has response => ( isa => 'HTTP::Response', is => 'rw' );
 
     # properties of result that Topsy sends us
-    has page     => ( isa => 'Int',      is => 'rw', default => 0 );
-    has window   => ( isa => 'Str',      is => 'rw', default => '' );
-    has total    => ( isa => 'Int',      is => 'rw', default => 0 );
-    has perpage  => ( isa => 'Int',      is => 'rw', default => 10);
-    has list     => ( isa => 'ArrayRef', is => 'rw', default => sub { [ ] } );
+    has page        => ( isa => 'Int',      is => 'rw', default => 0 );
+    has window      => ( isa => 'Str',      is => 'rw', default => '' );
+    has total       => ( isa => 'Int',      is => 'rw', default => 0 );
+    has last_offset => ( isa => 'Int',      is => 'rw', default => 0 );
+    has perpage     => ( isa => 'Int',      is => 'rw', default => 10);
+    has list        => ( isa => 'ArrayRef', is => 'rw', default => sub { [ ] } );
 
     has iter     => (
         metaclass    => 'Iterable',
         iterate_over => 'list',
     );
+    
+    has last_page => ( isa => 'Bool', is => 'rw', default => undef );
 
     method BUILD {
-        for my $attr (qw/page window total list perpage/) {
+        for my $attr (qw/page window total last_offset perpage list/) {
             $self->$attr( $self->perl->{response}{$attr} ) if exists $self->perl->{response}{$attr};
         }
+        # this is not as simple as it should be due a bug in which fewer than 'total' items are returned
+        # https://code.google.com/p/otterapi/issues/detail?id=18
+        $self->last_page(1)
+            if $self->last_offset >= $self->total 
+                or scalar @{$self->list} < $self->perpage;
         return $self;
     }
 }
