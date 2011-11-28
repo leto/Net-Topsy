@@ -1,36 +1,83 @@
-package Net::Topsy::Role::API;
+package Net::Topsy::Role::API;  # modeled after http://code.google.com/p/otterapi/wiki/Resources
 
 use Moose::Role;
+
+my %list_parameters = (
+    page    => 0,
+    perpage => 0,
+    offset  => 0,
+    mintime => 0,
+    maxtime => 0,
+    nohidden => 0,
+    allow_lang => 0,
+    family_filter => 0,
+);
 
 has API => ( isa => 'HashRef', is => 'ro', default => sub {
         {
         'http://otter.topsy.com' => {
+            '/authorinfo' => {
+                args       => {
+                    url       => 1,
+                },
+            },
+            '/experts' => {
+                args       => {
+                    q       => 1,
+                    config_NoFilters  => 0,
+                    %list_parameters
+                },
+            },
+            '/linkposts' => {
+                args       => {
+                    url       => 1,
+                    contains => 0,
+                    tracktype => 0,
+                    %list_parameters
+                },
+            },
+            '/linkpostcount' => {
+                args       => {
+                    url       => 1,
+                    contains => 0,
+                    tracktype => 0,
+                },
+            },
+            '/populartrackbacks' => {
+                args       => {
+                    url       => 1,
+                    %list_parameters
+                },
+            },
             '/search' => {
                 args       => {
                     q       => 1,
                     window  => 0,
-                    page    => 0,
-                    perpage => 0,
+                    type    => 0,
+                    query_features => 0,
+                    %list_parameters
                 },
             },
             '/searchcount' => {
                 args       => {
-                    q       => 1,
+                    q      => 1,
+                    dynamic => 0,
                 },
             },
-            '/profilesearch' => {
+            '/searchhistogram' => {
                 args       => {
                     q       => 1,
-                    page    => 0,
-                    perpage => 0,
+                    slice   => 0,
+                    period  => 0,
+                    count_method    => 0,
                 },
             },
-            '/authorsearch' => {
+            '/searchdate' => {
                 args       => {
                     q       => 1,
                     window  => 0,
-                    page    => 0,
-                    perpage => 0,
+                    type    => 0,
+                    zoom    => 0,
                 },
             },
             '/stats' => {
@@ -39,59 +86,18 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
                     contains  => 0,
                 },
             },
+            '/top' => {
+                args       => {
+                    thresh    => 1,
+                    type      => 0,
+                    locale    => 0,
+                    %list_parameters
+                },
+            },
             '/tags' => {
                 args       => {
                     url       => 1,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/authorinfo' => {
-                args       => {
-                    url       => 1,
-                },
-            },
-            '/urlinfo' => {
-                args       => {
-                    url       => 1,
-                },
-            },
-            '/linkpostcount' => {
-                args       => {
-                    url       => 1,
-                    contains => 0,
-                },
-            },
-            '/linkposts' => {
-                args       => {
-                    url       => 1,
-                    contains => 0,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/toplinkcount' => {
-                args       => {
-                    contains => 0,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/toplinks' => {
-                args       => {
-                    contains => 0,
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/trending' => {
-                args       => {
-                    page    => 0,
-                    perpage => 0,
-                },
-            },
-            '/credit' => {
-                args       => {
+                    %list_parameters
                 },
             },
             '/trackbacks' => {
@@ -99,21 +105,18 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
                     url      => 1,
                     contains => 0,
                     infonly  => 0,
-                    page     => 0,
-                    perpage  => 0,
+                    sort_method  => 0,
+                    %list_parameters
                 },
             },
-            '/related' => {
+            '/trending' => {
                 args       => {
-                    url     => 1,
-                    page    => 0,
-                    perpage => 0,
+                    %list_parameters
                 },
             },
-            '/trackbackcount' => {
+            '/urlinfo' => {
                 args       => {
-                    url      => 1,
-                    contains => 0,
+                    url       => 1,
                 },
             },
         },
