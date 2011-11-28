@@ -1,4 +1,4 @@
-package Net::Topsy::Role::API;
+package Net::Topsy::Role::API;  # modeled after http://code.google.com/p/otterapi/wiki/Resources
 
 use Moose::Role;
 
@@ -36,7 +36,7 @@ has API => ( isa => 'HashRef', is => 'ro', default => sub {
                     %list_parameters
                 },
             },
-            '/linkpostscount' => {
+            '/linkpostcount' => {
                 args       => {
                     url       => 1,
                     contains => 0,
