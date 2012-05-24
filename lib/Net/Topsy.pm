@@ -192,7 +192,7 @@ Returns a L<Net::Topsy::Result> object.
 
 =head1 AUTHORS
 
-Jonathan Leto, C<< <jonathan at leto.net> >>
+Jonathan "Duke" Leto, L<http://dukeleto.pl>
 Dan Dascalescu, L<http://dandascalescu.com>
 
 =head1 REPOSITORY
