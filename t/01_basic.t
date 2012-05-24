@@ -8,20 +8,22 @@ use lib qw(t/lib);
 use Mock::LWP::UserAgent;
 use Net::Topsy;
 
-plan tests => 18;
+plan tests => 17;
 
 {
     my $nt = Net::Topsy->new( key => 'foo' );
     isa_ok $nt, 'Net::Topsy';
-    my $r = $nt->credit;
+    my $r = $nt->top( { thresh => 'top100' } );
+    isa_ok($r,'Net::Topsy::Result');
+    my $r = $nt->trending;
     isa_ok($r,'Net::Topsy::Result');
     my $ua = $nt->ua;
     isa_ok($ua, 'LWP::UserAgent');
 }
 
 {
-    my @api_search_methods = qw/search searchcount profilesearch authorsearch toplinks toplinkcount/;
-    my @api_url_methods = qw/trackbacks tags stats authorinfo urlinfo linkposts related trackbackcount linkpostcount/;
+    my @api_search_methods = qw/experts search searchcount searchdate searchhistogram/;
+    my @api_url_methods = qw/authorinfo linkposts linkpostcount populartrackbacks stats tags trackbacks urlinfo/;
 
     for my $method (@api_search_methods) {
         my $nt     = Net::Topsy->new( key => 'foo' );

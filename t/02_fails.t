@@ -5,12 +5,12 @@ use Test::Exception;
 use lib qw(t/lib);
 use Mock::LWP::UserAgent;
 use Net::Topsy;
-use Test::More tests => 17;
+use Test::More tests => 16;
 use Test::Warn;
 
-my @api_search_methods = qw/search searchcount profilesearch authorsearch /;
-my @api_url_methods = qw/trackbacks linkpostcount tags stats authorinfo urlinfo linkposts related trackbackcount linkpostcount/;
-my @link_methods = qw/toplinks toplinkcount /;
+my @api_search_methods = qw/experts search searchcount searchdate searchhistogram/;
+my @api_url_methods = qw/authorinfo linkposts linkpostcount populartrackbacks stats tags trackbacks urlinfo/;
+my @link_methods = qw/top trending/;
 
 my $nt = Net::Topsy->new( key => 'foo' );
 
@@ -36,7 +36,7 @@ for my $method (@api_url_methods) {
 
 for my $method (@link_methods) {
     warnings_like( sub {
-            $nt->$method( { q => 'foo' } );
+            $nt->$method( { thresh => 'top100', q => 'foo' } );
         },
         qr/unexpected params: q/,
     );
