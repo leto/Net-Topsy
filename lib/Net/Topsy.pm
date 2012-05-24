@@ -74,13 +74,18 @@ class Net::Topsy with Net::Topsy::Role::API {
 
     }
 
+    method print_diags {
+        return $self->{_print_diags} unless @_;
+        $self->{_print_diags} = shift;
+    }
+
     method _make_url ($params, $route) {
         $route  = $self->base_url . $route . $self->format;
         
         my $url = URI->new($route);
         $url->query_form('apikey', $self->key || '');
         $url->query_form($params);
-        warn "requesting $url";
+        #warn "requesting $url";
         return $url;
     }
 

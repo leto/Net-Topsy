@@ -15,6 +15,9 @@ plan tests => 17;
     isa_ok $nt, 'Net::Topsy';
     my $r = $nt->top( { thresh => 'top100' } );
     isa_ok($r,'Net::Topsy::Result');
+}
+{
+    my $nt = Net::Topsy->new( key => 'bar' );
     my $r = $nt->trending;
     isa_ok($r,'Net::Topsy::Result');
     my $ua = $nt->ua;
